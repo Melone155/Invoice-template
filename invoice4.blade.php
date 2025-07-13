@@ -369,27 +369,40 @@
 		</tbody>
     </table>
 
+	@php
+		$items = $invoice->items ?? [];
+		$netto = 0;
+
+		foreach ($items as $item) {
+			$netto += ($item->price * $item->quantity) / 100;
+		}
+
+		$mwstSatz = 0.19; // 19 % MwSt
+		$mwst = $netto * $mwstSatz;
+		$brutto = $netto + $mwst;
+	@endphp
+
     <!-- Totals Section -->
     <div class="totals-section">
         <table class="totals-table">
             <tr>
                 <td class="label">Nettobetrag</td>
-                <td class="value">{netto} â‚¬</td>
+                <td class="value">{{ number_format($netto, 2, ',', '.') }} &#x20AC;</td>
             </tr>
             <tr>
                 <td class="label">zzgl. MwSt</td>
-                <td class="value">{mwst} â‚¬</td>
+                 <td class="value">{{ number_format($mwst, 2, ',', '.') }} &#x20AC;</td>
             </tr>
             <tr class="total-line">
                 <td class="label"><strong>Rechnungsbetrag</strong></td>
-                <td class="value"><strong>{brutto} â‚¬</strong></td>
+                <td class="value"><strong>{{ number_format($brutto, 2, ',', '.') }} &#x20AC;</strong></td>
             </tr>
         </table>
     </div>
 
     <!-- Footer Notes -->
     <div class="footer-notes">
-        Zahlbar ohne Abzug bis zum {payday}.<br>
+        Zahlbar ohne Abzug bis zum {{ $invoice->formattedDueDate }}.<br>
         Vielen Dank fÃ¼r Ihr Vertrauen und auf weiterhin gute Zusammenarbeit
     </div>
 
