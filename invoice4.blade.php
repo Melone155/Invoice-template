@@ -212,6 +212,20 @@
         .invoice-details {
             float: right;
         }
+
+		.item-description {
+			color: #000;
+			font-size: 12px;
+			line-height: 1.4;
+			margin: -2px 0 0 0;
+			padding: 0;
+			white-space: normal;
+			word-break: break-word;
+		}
+
+		.second-tablee{
+			background-color: #e6e6e6;
+		}
     </style>
 </head>
 
@@ -283,21 +297,24 @@
             <div>{{$customer_address}}</div>
             <div>{{$customer_postcode}} {{$customer_city}}</div>
             <div>{{$customer_country}}</div>
+			<div>{{ $invoice->customer->base_info }}</div>
         </div>
 
         <div class="invoice-details">
             <table>
                 <tr>
                     <td class="label">Datum</td>
-                    <td class="value">{Date}</td>
+                    <td class="value">{{ $invoice->formattedInvoiceDate }}</td>
                 </tr>
-                <tr>
-                    <td class="label">Kunden-Nr:</td>
-                    <td class="value">{CustomerID}</td>
-                </tr>
+               @if (!empty($notes))
+					<tr>
+						<td class="label">Kunden-Nr:</td>
+						<td class="value">{!! $notes !!}</td>
+					</tr>
+				@endif
                 <tr>
                     <td class="label">Rechnungs-Nr:</td>
-                    <td class="value">{InvoiceID}</td>
+                    <td class="value">{{ $invoice->invoice_number }}</td>
                 </tr>
                 <tr>
                     <td class="label">Seite-Nr.</td>
@@ -318,48 +335,38 @@
                 <th style="width: 8%;">Pos.</th>
                 <th style="width: 8%;">Menge</th>
                 <th style="width: 40%;">Bezeichnung</th>
-                <th class="center" style="width: 8%;">% Rabatt</th>
+                <th class="center" style="width: 8%;">       </th>
                 <th class="center" style="width: 8%;">% MwSt.</th>
                 <th class="right" style="width: 14%;">Einzelpreis</th>
                 <th class="right" style="width: 14%;">Gesamtpreis</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td class="center">1</td>
-                <td class="center">1 psch.</td>
-                <td>
-                    <strong>Invoice number: {invoiceid}</strong>
-                    <div class="item-description">{product} EinrichtungsgebÃ¼hr</div>
-                </td>
-                <td class="center"></td>
-                <td class="center">19%</td>
-                <td class="right">{setupprice} â‚¬</td>
-                <td class="right">{setupprice} â‚¬</td>
-            </tr>
-            <tr style="background-color: #f9f9f9;">
-                <td class="center">2</td>
-                <td class="center">1 x</td>
-                <td>
-                    <strong>{startdate} â€“ {enddate}</strong>
-                    <div class="item-details">
-                        - Standort: Frankfurt am Main<br>
-                        - Arbeitsspeicher: {RAM}<br>
-                        - CPU Kerne: {CPU}<br>
-                        - Betriebssystem: {os}<br>
-                        - Festplattenspeicher: {storage}<br>
-                        - Eigene IP-Adresse: 1 IPv4-Adresse<br>
-                        - Bandbreite: 1Gbit/s up/down<br>
-                        - Abrechnungsintervall: {months}<br>
-                        - Abrechnungsart: Prepaid
-                    </div>
-                </td>
-                <td class="center"></td>
-                <td class="center">19%</td>
-                <td class="right">{price} â‚¬</td>
-                <td class="right">{price} â‚¬</td>
-            </tr>
-        </tbody>
+			<tbody>
+				@php
+					$items = $invoice->items ?? [];
+				@endphp
+
+				@foreach ($items as $index => $item)
+					@php
+						$rowClass = $index % 2 === 1 ? 'second-tablee' : ''; // class für ungerade Zeilen
+						$position = $index + 1;
+						$unitPrice = number_format($item->price / 100, 2, ',', '.');
+						$totalPrice = number_format(($item->price * $item->quantity) / 100, 2, ',', '.');
+					@endphp
+
+					<tr @if($rowClass) class="{{ $rowClass }}" @endif>
+						<td class="center">{{ $position }}</td>
+						<td class="center">{{ $item->quantity }} x</td>
+						<td>
+							<div class="item-description">{{ $item->name }}</div>
+						</td>
+						<td class="center"></td>
+						<td class="center">19%</td>
+						<td class="right">{{ $unitPrice }} &#x20AC;</td>
+						<td class="right">{{ $totalPrice }} &#x20AC;</td>
+					</tr>
+			@endforeach
+		</tbody>
     </table>
 
     <!-- Totals Section -->
