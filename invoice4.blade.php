@@ -63,8 +63,7 @@
         }
 
         .customer-address .name {
-            font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 0px;
         }
 
         .invoice-details {
@@ -253,10 +252,37 @@
     <!-- Address and Invoice Details Section -->
     <div class="address-section">
         <div class="customer-address">
-            <div class="name">{name}</div>
-            <div>{line1}</div>
-            <div>{Postcode_cust} {City-cust}</div>
-            <div>Germany</div>
+
+			@php
+				// Adresse aufteilen
+				$lines = preg_split('/<br\s*\/?>|<\/br>|\r\n|\r|\n/', $billing_address);
+				$lines = array_map('trim', $lines);
+
+				// Zeilen prüfen
+				$line0 = $lines[0] ?? ''; // <h3>Maximilian Wolf</h3>Burgstr. 19
+				$line1 = $lines[1] ?? ''; // Eppingen
+				$line2 = $lines[2] ?? ''; // Germany 75031
+
+				// 1. Name extrahieren aus <h3>…</h3>
+				preg_match('/<h3[^>]*>(.*?)<\/h3>/', $line0, $nameMatch);
+				$customer_name = $nameMatch[1] ?? '';
+
+				// 2. Straße = Rest nach dem </h3>
+				$customer_address = trim(str_replace($nameMatch[0] ?? '', '', $line0));
+
+				// 3. Stadt = Zeile 1
+				$customer_city = $line1;
+
+				// 4. Land und PLZ = aus Zeile 2
+				$line2_parts = preg_split('/\s+/', $line2);
+				$customer_country = $line2_parts[0] ?? '';
+				$customer_postcode = $line2_parts[1] ?? '';
+			@endphp
+
+            <div class="name"> {{$customer_name}}</div>
+            <div>{{$customer_address}}</div>
+            <div>{{$customer_postcode}} {{$customer_city}}</div>
+            <div>{{$customer_country}}</div>
         </div>
 
         <div class="invoice-details">
