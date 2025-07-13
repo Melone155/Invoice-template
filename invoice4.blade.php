@@ -226,6 +226,36 @@
 		.second-tablee{
 			background-color: #e6e6e6;
 		}
+
+		.footer-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 30px;
+            border-top: 1px solid #E8E8E8;
+            background-color: white;
+            height: 80px;
+        }
+
+        .footer-table {
+            width: 100%;
+            font-size: 10px;
+            line-height: 14px;
+            color: #595959;
+        }
+
+        .footer-column {
+            width: 25%;
+            vertical-align: top;
+            padding-right: 15px;
+        }
+
+        .footer-column strong {
+            color: #1D1D1D;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 
@@ -404,6 +434,38 @@
     <div class="footer-notes">
         Zahlbar ohne Abzug bis zum {{ $invoice->formattedDueDate }}.<br>
         Vielen Dank fÃ¼r Ihr Vertrauen und auf weiterhin gute Zusammenarbeit
+    </div>
+
+<!-- Footer -->
+    <div class="footer-section">
+        <table width="100%" class="footer-table">
+            <tr>
+                <td class="footer-column">
+                    <strong>Anschrift</strong><br>
+                    {CompanyName}<br>
+                    {Street}<br>
+                    {postcode} {City}<br><br>
+                    GF {GF}
+                </td>
+                <td class="footer-column">
+                    <strong>Kontakt</strong><br>
+                    Tel. {number}<br>
+                    {email}<br>
+                    {web}
+                </td>
+                <td class="footer-column">
+                    <strong>USt-IdNr.</strong><br>
+                    {va}
+                </td>
+                <td class="footer-column">
+                    <strong>Bankverbindung</strong><br>
+                    {BankeName}<br>
+                    {BankOwner}<br>
+                    {IBAN}<br>
+                    {BIC}
+                </td>
+            </tr>
+        </table>
     </div>
 
 </body>
