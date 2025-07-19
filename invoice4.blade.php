@@ -256,6 +256,13 @@
             font-weight: bold;
         }
 
+		.item-details {
+			font-size: 9px;
+			color: #666;
+			margin-top: 3px;
+			line-height: 1.2;
+		}
+
     </style>
 </head>
 
@@ -389,6 +396,9 @@
 						<td class="center">{{ $item->quantity }} x</td>
 						<td>
 							<div class="item-description">{{ $item->name }}</div>
+							@if(!empty($item->description))
+								<div class="item-details">{!! nl2br(e($item->description)) !!}</div>
+							@endif
 						</td>
 						<td class="center"></td>
 						<td class="center">19%</td>
@@ -433,7 +443,7 @@
     <!-- Footer Notes -->
     <div class="footer-notes">
         Zahlbar ohne Abzug bis zum {{ $invoice->formattedDueDate }}.<br>
-        Vielen Dank fÃ¼r Ihr Vertrauen und auf weiterhin gute Zusammenarbeit
+        Vielen Dank für Ihr Vertrauen und auf weiterhin gute Zusammenarbeit
     </div>
 
 <!-- Footer -->
